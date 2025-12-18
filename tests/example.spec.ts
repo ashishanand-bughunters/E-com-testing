@@ -5,7 +5,6 @@ import { Products } from "../pages/Products";
 import { Checkout } from "../pages/Checkout";
 import { faker } from "@faker-js/faker";
 import fs from "fs";
-import path from "path";
 
 export interface RegisterData {
   firstName: string;
