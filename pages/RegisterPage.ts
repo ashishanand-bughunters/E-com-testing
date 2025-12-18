@@ -31,7 +31,7 @@ export class RegisterPage {
   }
 
   async goToRegisterPage() {
-    // await this.menuButton.hover();
+    await this.menuButton.hover();
     await this.registerOption.waitFor({ state: "visible" });
     await this.registerOption.click();
   }
@@ -49,5 +49,4 @@ export class RegisterPage {
     await this.privacy.check();
     await this.registerButton.click();
   }
-
 }
