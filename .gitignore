@@ -1,5 +1,5 @@
 # Playwright
 node_modules/
 /playwright-report
-/report
+# /report
 /test-results
