@@ -27,7 +27,7 @@ export interface BillingData {
 }
 
 type TestResult = {
-  title?: string | undefined;
+  title: string | undefined;
   status: string | undefined;
   screenshot?: string | undefined;
 };
@@ -94,6 +94,7 @@ test.describe("Ecommerce Flow", () => {
     screenshotPath = "OrderPlaced.png";
     await page.screenshot({ path: screenshotPath });
     results.push({
+      title: "Test completed",
       status: testInfo.status,
       screenshot: screenshotPath,
     });
