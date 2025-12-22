@@ -60,7 +60,7 @@ export class Checkout {
 
     const stateOptions = await this.state.count();
     const randomIndexS = Math.floor(Math.random() * (stateOptions - 1)) + 1;
-    await this.country.selectOption({ index: randomIndexS });
+    await this.state.selectOption({ index: randomIndexS });
 
     await this.tnc.click();
 

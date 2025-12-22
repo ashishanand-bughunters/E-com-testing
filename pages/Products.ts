@@ -5,7 +5,6 @@ export class Products {
   searchBox: Locator;
   searchButton: Locator;
   products: Locator;
-  inStock: Locator;
   outStock: Locator;
 
   constructor(page: Page) {
@@ -13,7 +12,6 @@ export class Products {
     this.searchBox = page.locator("input[name='search'][data-autocomplete]");
     this.searchButton = page.locator(".type-text");
     this.products = page.locator(".product-thumb");
-    this.inStock = page.locator(".badge.badge-success");
     this.outStock = page.locator(".badge.badge-danger");
   }
 
