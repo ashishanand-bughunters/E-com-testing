@@ -23,10 +23,7 @@ export default defineConfig({
     {
       name: "chromium",
       use: {
-        viewport: null,
-        launchOptions: {
-          args: process.env.CI ? [] : ["--start-maximized"],
-        },
+        viewport: { width: 1600, height: 1200 },
       },
     },
   ],
