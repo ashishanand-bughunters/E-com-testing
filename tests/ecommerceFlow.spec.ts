@@ -1,5 +1,4 @@
 import { test, BrowserContext, Page } from "@playwright/test";
-import { faker } from "@faker-js/faker";
 import * as fs from "node:fs";
 import dontenv from "dotenv";
 import type {
@@ -10,8 +9,8 @@ import type {
 
 dontenv.config();
 
-const pageUrl = process.env.PAGE_URL || "";
-const results: TestResult[] = [];
+const pageUrl: string = process.env.PAGE_URL || "",
+  results: TestResult[] = [];
 
 const {
     register,
