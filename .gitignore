@@ -1,5 +1,7 @@
 # Playwright
 node_modules/
 /playwright-report
-# /report
 /test-results
+/failureAt*.png
+/OrderPlaced.png
+/report
