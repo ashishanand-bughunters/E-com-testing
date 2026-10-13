@@ -32,10 +32,10 @@ async function addProduct(page: Page) {
     if (isOutOfStock) {
       await page.goBack();
     } else {
-      console.log("Adding to cartttttttttt");
+      console.log("Adding to cart");
       await page.locator(productSelectors.addToCartButton).click();
       await expect(addProductConfirmation).toBeVisible();
-      console.log("Added to cartttttttttt");
+      console.log("Added to cart");
       break;
     }
   }

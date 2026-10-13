@@ -1,43 +1,37 @@
-import { test, expect, BrowserContext, Page } from "@playwright/test";
-const { goToRegisterPage, register } = require("../pages/RegisterPage");
-const { goToLoginPage, login } = require("../pages/LoginPage");
-const { addProduct, searchProduct } = require("../pages/Products");
-const { confirmOrder, fillForm, goToCart } = require("../pages/Checkout");
+import { test, BrowserContext, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import * as fs from "node:fs";
+import dontenv from "dotenv";
+import type {
+  BillingData,
+  RegisterData,
+  TestResult,
+} from "../files/common.types";
 
-interface RegisterData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  telephone: string;
-  password: string;
-  newsletter: "Yes" | "No";
-}
+dontenv.config();
 
-interface BillingData {
-  firstName: string;
-  lastName: string;
-  company: string;
-  add1: string;
-  add2: string;
-  city: string;
-  postcode: string;
-}
-
-type TestResult = {
-  title: string | undefined;
-  status: string | undefined;
-  screenshot?: string | undefined;
-};
-
+const pageUrl = process.env.PAGE_URL || "";
 const results: TestResult[] = [];
 
-let screenshotPath: string | undefined;
-let context: BrowserContext;
-let page: Page;
-let registeredEmail: string;
-let password: string;
+const {
+    register,
+    generateRandomRegisterData,
+  } = require("../pages/RegisterPage"),
+  { login } = require("../pages/LoginPage"),
+  { addProduct, searchProduct } = require("../pages/Products"),
+  {
+    confirmOrder,
+    fillForm,
+    goToCart,
+    generateRandomBillingData,
+  } = require("../pages/Checkout");
+
+let screenshotPath: string | undefined,
+  context: BrowserContext,
+  page: Page,
+  registeredEmail: string = process.env.REGISTERED_EMAIL || "",
+  password: string = process.env.PASSWORD || "",
+  registered: boolean = false;
 
 test.describe("Ecommerce Flow", () => {
   test.describe.configure({ mode: "serial" });
@@ -48,32 +42,17 @@ test.describe("Ecommerce Flow", () => {
   });
 
   test("Register", async () => {
-    registeredEmail = faker.internet.email();
-    password = faker.internet.password();
-    const regisData: RegisterData = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: registeredEmail,
-      telephone: faker.phone.number(),
-      password,
-      newsletter: Math.random() > 0.5 ? "Yes" : "No",
-    };
+    const regisData: RegisterData = generateRandomRegisterData();
+    registeredEmail = regisData.email;
+    password = regisData.password;
 
-    await page.goto("https://ecommerce-playground.lambdatest.io/");
-    await goToRegisterPage(page);
-    await register(page, regisData);
-    await expect(page).toHaveTitle("Your Account Has Been Created!");
+    await page.goto(pageUrl);
+    registered = await register(page, regisData);
   });
 
   test("Login", async () => {
-    await page.goto("https://ecommerce-playground.lambdatest.io/");
-    const alreadyLoggedIn = await goToLoginPage(page);
-    if (!alreadyLoggedIn) {
-      await login(page, registeredEmail, password);
-      await expect(page).toHaveTitle("My Account");
-    } else {
-      await expect(page).toHaveTitle("Your Store");
-    }
+    test.skip(registered, "User already registered, skipping login test");
+    await login(page, registeredEmail, password);
   });
 
   test("Product", async () => {
@@ -82,15 +61,7 @@ test.describe("Ecommerce Flow", () => {
   });
 
   test("Checkout", async ({}, testInfo) => {
-    const billingData: BillingData = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      company: faker.company.name(),
-      add1: faker.location.streetAddress(),
-      add2: faker.location.secondaryAddress(),
-      city: faker.location.city(),
-      postcode: faker.location.zipCode(),
-    };
+    const billingData: BillingData = generateRandomBillingData();
 
     await goToCart(page);
     await fillForm(page, billingData);

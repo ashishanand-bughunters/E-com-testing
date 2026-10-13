@@ -1,0 +1,5 @@
+{
+  "shortTimeout": 5000,
+  "mediumTimeout": 20000,
+  "longTimeout": 600000
+}
