@@ -5,3 +5,4 @@ node_modules/
 /failureAt*.png
 /OrderPlaced.png
 /report
+/.env
