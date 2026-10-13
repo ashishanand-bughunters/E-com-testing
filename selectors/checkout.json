@@ -1,0 +1,17 @@
+{
+  "openCartButton": "(//div[contains(@class,'widget-cart')]//a)[1]",
+  "checkoutButton": "//a[text()=' Checkout'] | //*[text()=' Checkout']",
+  "editCartButton": "//a[text()=' Edit cart'] | //*[text()=' Edit cart']",
+  "billingAddressFirstNameInput": "#input-payment-firstname",
+  "billingAddressLastNameInput": "#input-payment-lastname",
+  "billingAddressCompanyInput": "#input-payment-company",
+  "billingAddressLine1Input": "#input-payment-address-1",
+  "billingAddressLine2Input": "#input-payment-address-2",
+  "billingCityInput": "#input-payment-city",
+  "billingPostcodeInput": "#input-payment-postcode",
+  "billingCountrySelect": "#input-payment-country",
+  "billingStateSelect": "#input-payment-zone",
+  "termsAndConditionsLabel": "label[for='input-agree']",
+  "continueButton": "#button-save",
+  "confirmOrderButton": "#button-confirm"
+}

@@ -1,0 +1,13 @@
+{
+  "accountMenuButton": "a:has(i.fa-user)",
+  "registerOption": ".dropdown-menu >> text=Register",
+  "firstNameInput": "#input-firstname",
+  "lastNameInput": "#input-lastname",
+  "emailInput": "#input-email",
+  "telephoneInput": "#input-telephone",
+  "passwordInput": "#input-password",
+  "confirmPasswordInput": "#input-confirm",
+  "newsletterYesLabel": "[for='input-newsletter-yes']",
+  "privacyAgreementLabel": "[for='input-agree']",
+  "registerButton": ".btn.btn-primary[value='Continue']"
+}

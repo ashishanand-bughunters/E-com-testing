@@ -1,0 +1,11 @@
+{
+  "searchInput": "input[name='search'][data-autocomplete]",
+  "searchButton": ".type-text",
+  "productCards": ".product-thumb",
+  "outOfStockBadge": ".badge.badge-danger:visible",
+  "productImage": "img[alt='HTC Touch HD']",
+  "productLink": "a",
+  "addToCartButton": "button:has-text('Add to Cart'):visible",
+  "addProductConfirmation": "#notification-box-top",
+  "pageAd": "//div//figure//*[contains(@src,'inner-banner')]"
+}

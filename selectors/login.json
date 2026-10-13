@@ -1,0 +1,8 @@
+{
+  "accountMenuButton": "a:has(i.fa-user)",
+  "loginOption": ".dropdown-menu >> text=Login",
+  "logoutOption": ".dropdown-menu >> text=Logout",
+  "emailInput": "#input-email",
+  "passwordInput": "#input-password",
+  "loginButton": ".btn.btn-primary[value='Login']"
+}

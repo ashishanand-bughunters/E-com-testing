@@ -1,12 +1,12 @@
-import { test, expect, Locator } from "@playwright/test";
-import { RegisterPage } from "../pages/RegisterPage";
-import { LoginPage } from "../pages/LoginPage";
-import { Products } from "../pages/Products";
-import { Checkout } from "../pages/Checkout";
+import { test, expect, BrowserContext, Page } from "@playwright/test";
+const { goToRegisterPage, register } = require("../pages/RegisterPage");
+const { goToLoginPage, login } = require("../pages/LoginPage");
+const { addProduct, searchProduct } = require("../pages/Products");
+const { confirmOrder, fillForm, goToCart } = require("../pages/Checkout");
 import { faker } from "@faker-js/faker";
-import fs from "fs";
+import * as fs from "node:fs";
 
-export interface RegisterData {
+interface RegisterData {
   firstName: string;
   lastName: string;
   email: string;
@@ -15,7 +15,7 @@ export interface RegisterData {
   newsletter: "Yes" | "No";
 }
 
-export interface BillingData {
+interface BillingData {
   firstName: string;
   lastName: string;
   company: string;
@@ -34,49 +34,55 @@ type TestResult = {
 const results: TestResult[] = [];
 
 let screenshotPath: string | undefined;
+let context: BrowserContext;
+let page: Page;
 let registeredEmail: string;
-const password = faker.internet.password();
+let password: string;
 
 test.describe("Ecommerce Flow", () => {
   test.describe.configure({ mode: "serial" });
 
-  test("Register", async ({ page }) => {
+  test.beforeAll(async ({ browser }) => {
+    context = await browser.newContext();
+    page = await context.newPage();
+  });
+
+  test("Register", async () => {
     registeredEmail = faker.internet.email();
-    const nls = Math.random() > 0.5 ? "Yes" : "No";
+    password = faker.internet.password();
     const regisData: RegisterData = {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       email: registeredEmail,
       telephone: faker.phone.number(),
       password,
-      newsletter: nls,
+      newsletter: Math.random() > 0.5 ? "Yes" : "No",
     };
+
     await page.goto("https://ecommerce-playground.lambdatest.io/");
-    console.log(regisData.newsletter);
-    const register = new RegisterPage(page);
-    await register.goToRegisterPage();
-    await register.register(regisData);
+    await goToRegisterPage(page);
+    await register(page, regisData);
     await expect(page).toHaveTitle("Your Account Has Been Created!");
   });
 
-  test.beforeEach(async ({ page }) => {
-    if (!registeredEmail) return;
+  test("Login", async () => {
     await page.goto("https://ecommerce-playground.lambdatest.io/");
-    const login = new LoginPage(page);
-    await login.goToLoginPage();
-    await login.login(registeredEmail, password);
-    await expect(page).toHaveTitle("My Account");
+    const alreadyLoggedIn = await goToLoginPage(page);
+    if (!alreadyLoggedIn) {
+      await login(page, registeredEmail, password);
+      await expect(page).toHaveTitle("My Account");
+    } else {
+      await expect(page).toHaveTitle("Your Store");
+    }
   });
 
-  test("Product", async ({ page }) => {
-    // await page.goto("https://ecommerce-playground.lambdatest.io/");
-    const product = new Products(page);
-    await product.searchProduct("HTC");
-    await product.addProduct();
+  test("Product", async () => {
+    await searchProduct(page, "HTC");
+    await addProduct(page);
   });
 
-  test("Checkout", async ({ page }, testInfo) => {
-    const billinData: BillingData = {
+  test("Checkout", async ({}, testInfo) => {
+    const billingData: BillingData = {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       company: faker.company.name(),
@@ -86,10 +92,9 @@ test.describe("Ecommerce Flow", () => {
       postcode: faker.location.zipCode(),
     };
 
-    const checkout = new Checkout(page);
-    await checkout.goToCart();
-    await checkout.fillForm(billinData);
-    await checkout.confirmOrder();
+    await goToCart(page);
+    await fillForm(page, billingData);
+    await confirmOrder(page);
     screenshotPath = "OrderPlaced.png";
     await page.screenshot({ path: screenshotPath });
     results.push({
@@ -99,9 +104,9 @@ test.describe("Ecommerce Flow", () => {
     });
   });
 
-  test.afterEach(async ({ page }, testInfo) => {
+  test.afterEach(async ({}, testInfo) => {
     screenshotPath = `failureAt${testInfo.title}.png`;
-    if (testInfo.status !== testInfo.expectedStatus) {
+    if (testInfo.status !== testInfo.expectedStatus && page) {
       await page.screenshot({
         path: screenshotPath,
       });
@@ -110,6 +115,12 @@ test.describe("Ecommerce Flow", () => {
         status: testInfo.status,
         screenshot: screenshotPath,
       });
+    }
+  });
+
+  test.afterAll(async () => {
+    if (context) {
+      await context.close();
     }
   });
 
@@ -138,7 +149,7 @@ test.describe("Ecommerce Flow", () => {
             ${r.screenshot ? `<img src="../${r.screenshot}" />` : ""}
           </div>
           <hr />
-        `
+        `,
         )
         .join("")}
     </body>
