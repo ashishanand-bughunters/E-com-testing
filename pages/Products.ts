@@ -1,6 +1,6 @@
 import { expect, Page } from "@playwright/test";
 import productSelectors from "../selectors/products.json";
-import { shortTimeout } from "../files/global.json";
+import { shortTimeout, longTimeout } from "../files/global.json";
 
 export async function searchProduct(page: Page, product: string) {
   console.info("Searching for a product");
@@ -40,7 +40,7 @@ export async function addProduct(page: Page, productName: string) {
         {
           message:
             "Product details did not show stock status or an Add to Cart button",
-          timeout: 10000,
+          timeout: longTimeout,
         },
       )
       .toBe(true);
