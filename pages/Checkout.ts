@@ -1,14 +1,16 @@
 import { expect, Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import type { BillingData } from "../files/common.types";
-const checkoutSelectors = require("../selectors/checkout.json");
+import checkoutSelectors from "../selectors/checkout.json";
 
-async function goToCart(page: Page) {
+async function navigateToCheckout(page: Page) {
+  console.info("Opening the cart and checkout");
   await page.locator(checkoutSelectors.openCartButton).click();
   await page.locator(checkoutSelectors.checkoutButton).click();
 }
 
 async function fillForm(page: Page, data: BillingData) {
+  console.info("Filling billing form");
   const { firstName, lastName, company, add1, add2, city, postcode } = data;
   await page
     .locator(checkoutSelectors.billingAddressFirstNameInput)
@@ -38,12 +40,15 @@ async function fillForm(page: Page, data: BillingData) {
 
   await page.locator(checkoutSelectors.termsAndConditionsLabel).click();
   await page.locator(checkoutSelectors.continueButton).click();
+  console.info("Billing form submitted");
 }
 
-async function confirmOrder(page: Page) {
+async function completeOrder(page: Page, billingData: BillingData) {
+  await fillForm(page, billingData);
+  console.info("Confirming the order");
   await page.locator(checkoutSelectors.confirmOrderButton).click();
   await expect(page).toHaveTitle("Your order has been placed!");
-  console.log("Order Placed!!!!");
+  console.info("Order placed successfully");
 }
 
 function generateRandomBillingData() {
@@ -60,8 +65,8 @@ function generateRandomBillingData() {
 }
 
 module.exports = {
-  goToCart,
+  navigateToCheckout,
   fillForm,
-  confirmOrder,
+  completeOrder,
   generateRandomBillingData,
 };

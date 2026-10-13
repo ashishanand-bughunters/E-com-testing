@@ -2,20 +2,24 @@ import { Page, expect } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import type { RegisterData } from "../files/common.types";
 import registerSelectors from "../selectors/register.json";
+import { mediumTimeout } from "../files/global.json";
 
 async function goToRegisterPage(page: Page) {
-  const menuButton = page.locator(registerSelectors.accountMenuButton);
-  const registerOption = page.locator(registerSelectors.registerOption);
+  console.info("Opening the registration page");
+  const menuButton = page.locator(registerSelectors.accountMenuButton).first();
+  const registerOption = page.locator(registerSelectors.registerOption).first();
 
   await menuButton.hover();
-  await registerOption.waitFor({ state: "visible" });
+  await expect(registerOption, "Register option not visible").toBeVisible({
+    timeout: mediumTimeout,
+  });
   await registerOption.click();
 }
 
 async function fillRegisterFields(page: Page, data: RegisterData) {
   const { firstName, lastName, email, telephone, password, newsletter } = data;
 
-  console.log(`Registering new user: ${firstName} ${lastName} [${email}]`);
+  console.info("Filling registration form");
   await page.locator(registerSelectors.firstNameInput).fill(firstName);
   await page.locator(registerSelectors.lastNameInput).fill(lastName);
   await page.locator(registerSelectors.emailInput).fill(email);
@@ -26,6 +30,7 @@ async function fillRegisterFields(page: Page, data: RegisterData) {
     await page.locator(registerSelectors.newsletterYesLabel).click();
   }
   await page.locator(registerSelectors.privacyAgreementLabel).check();
+  console.info("Submitting registration form");
   await page.locator(registerSelectors.registerButton).click();
 }
 
@@ -33,6 +38,7 @@ async function register(page: Page, data: RegisterData) {
   await goToRegisterPage(page);
   await fillRegisterFields(page, data);
   await expect(page).toHaveTitle("Your Account Has Been Created!");
+  console.info("Registration completed successfully");
   return true;
 }
 
@@ -45,7 +51,6 @@ function generateRandomRegisterData() {
     password: faker.internet.password(),
     newsletter: Math.random() > 0.5 ? "Yes" : "No",
   };
-  console.log(JSON.stringify(regisData, null, 2));
   return regisData;
 }
 

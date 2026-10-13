@@ -5,7 +5,7 @@
   "outOfStockBadge": ".badge.badge-danger:visible",
   "productImage": "img[alt='HTC Touch HD']",
   "productLink": "a",
-  "addToCartButton": "button:has-text('Add to Cart'):visible",
+  "addToCartButtonName": "Add to Cart",
   "addProductConfirmation": "#notification-box-top",
-  "pageAd": "//div//figure//*[contains(@src,'inner-banner')]"
+  "closeConfirmationPopupButton": "#notification-box-top button"
 }
